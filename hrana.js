@@ -1,6 +1,10 @@
 export class Hrana{
-    constructor(tip, kolicina){
+    constructor(tip, naziv){
         this.tip = tip;
-        this.kolicina = kolicina;
+        this.naziv = naziv;
+    }
+
+    VratiKolicinu(){
+
     }
 }
