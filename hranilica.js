@@ -5,6 +5,7 @@ export class Hranilica{
         this.maxKapacitet = maxKapacitet;
         this.trenutniKapacitet = trenutniKapacitet;
         this.miniContainer = null;
+        this.boje = ["#c2746e", "#70b7c2"]; //0->meso, 1->granule
     }
 
     CrtajHranilicu(host){
@@ -16,14 +17,23 @@ export class Hranilica{
 
     //mora da se uzme neka random boja, da se oznaci deo koji je zauzela ova hrana
     DodajHranu(hrana, kolicina){
-        console.log("USO SAM OVDE");
+        console.log(hrana, kolicina);
         if(this.trenutniKapacitet + kolicina <= this.maxKapacitet)
         {
-            console.log("USO SAM U IF")
+            if(hrana.tip=="Meso"){
+                console.log("dodajem meso");
+            }
+            else{
+                console.log("dodajem granule");
+            }
+            this.trenutniKapacitet += kolicina;
             this.hrana.push(hrana);
-            console.log(this.hrana);
         }
-        else new Exception("Nema mesta u hranilici");
+        else {
+            console.log("NEMA MESTA");
+            throw new Exception("Nema mesta u hranilici");
+        }
+        console.log(this.hrana);
     }
 
 }

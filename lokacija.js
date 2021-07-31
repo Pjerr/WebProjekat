@@ -22,11 +22,14 @@ export class Lokacija{
     }
 
     DodajHranilicu(hranilica){
-        console.log(hranilica, this.trenutniKapacitet, this.maxKapacitet);
         if(this.trenutniKapacitet + 1 <= this.maxKapacitet)
         {
-            console.log("USO SAM U DRUGI IF");
             this.hranilice.push(hranilica);
         }
+    }
+
+    //??
+    AzurirajLokaciju(){
+        
     }
 }
