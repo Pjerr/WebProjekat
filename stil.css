@@ -17,6 +17,7 @@
 
 h3{
     text-align: center;
+    margin: 5px;
 }
 button{
     margin: 0px 5px;
@@ -35,4 +36,12 @@ button{
     flex-basis: 40%;
     flex-shrink: 0;
     border: 1px solid green;
+}
+
+.fillMeso{
+    color: #c2746e;
+}
+
+.fillGranule{
+    color: "#70b7c2";
 }

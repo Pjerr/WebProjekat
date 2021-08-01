@@ -15,25 +15,27 @@ export class Hranilica{
         host.appendChild(this.miniContainer);
     }
 
-    //mora da se uzme neka random boja, da se oznaci deo koji je zauzela ova hrana
     DodajHranu(hrana, kolicina){
-        console.log(hrana, kolicina);
         if(this.trenutniKapacitet + kolicina <= this.maxKapacitet)
         {
+            let div;
             if(hrana.tip=="Meso"){
                 console.log("dodajem meso");
+                
             }
             else{
                 console.log("dodajem granule");
+
             }
             this.trenutniKapacitet += kolicina;
             this.hrana.push(hrana);
         }
         else {
             console.log("NEMA MESTA");
-            throw new Exception("Nema mesta u hranilici");
+            return false;
         }
         console.log(this.hrana);
+        return true;
     }
 
 }

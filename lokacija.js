@@ -22,14 +22,13 @@ export class Lokacija{
     }
 
     DodajHranilicu(hranilica){
+        console.log(this.trenutniKapacitet, this.maxKapacitet);
         if(this.trenutniKapacitet + 1 <= this.maxKapacitet)
         {
+            this.trenutniKapacitet++;
             this.hranilice.push(hranilica);
+            return true;
         }
-    }
-
-    //??
-    AzurirajLokaciju(){
-        
+        else return false;
     }
 }
