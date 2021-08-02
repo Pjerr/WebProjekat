@@ -7,18 +7,23 @@ export class Lokacija{
         this.miniContainer = null;
     }
 
-    CrtajLokaciju(host){   
+    CrtajLokaciju(host){  
         this.miniContainer = document.createElement("div");
-        this.miniContainer.id = this.nazivLokacije;
+        this.miniContainer.classList.add(this.nazivLokacije);
         this.miniContainer.classList.add("lokacija");
         host.appendChild(this.miniContainer);
 
+        let div = document.createElement("div");
         const naslov = document.createElement("h3");
         naslov.classList.add("nazivLokacije");
         naslov.innerHTML = this.nazivLokacije;
-        this.miniContainer.appendChild(naslov);
+        div.appendChild(naslov);
+        this.miniContainer.appendChild(div);
+        div = document.createElement("div");
+        div.classList.add("divZaHranilice");
+        this.miniContainer.appendChild(div);
         this.hranilice.forEach((hranilica)=>{
-            hranilica.CrtajHranilicu(this.miniContainer);
+            hranilica.CrtajHranilicu(div);
         })
     }
 
@@ -30,5 +35,12 @@ export class Lokacija{
             return true;
         }
         else return false;
+    }
+
+    OsveziLokaciju(host){
+        host.innerHTML = "";
+        this.hranilice.forEach((hranilica)=>{
+            hranilica.CrtajHranilicu(host);
+        })
     }
 }

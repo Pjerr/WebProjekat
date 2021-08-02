@@ -48,12 +48,10 @@ export class Hranilica {
       } else return false;
     }
   }
-  //mora da se nekako skaliraju brojke
+
   CrtajHranu(host) {
     host.innerHTML = "";
-    console.log(host);
     const h = this.maxKapacitet;
-    let y = 0; //inicjalno nema nicega u hranilici
     let x = 0;
     let l;
     this.hrana.forEach((hrana) => {
@@ -66,21 +64,19 @@ export class Hranilica {
         this.miniContainer.classList.add("fillMeso");
         this.miniContainer.innerHTML = "Meso " + hrana.trenutnaKolicina;
       }
-      console.log(h,x,y);
-      //formula ne valja kada se dodaje sledeci tip hrane
-      l = ((100 * x) / h);
-      console.log("fillWidth "+l);
+      l = (100 * x) / h;
+      console.log("fillWidth " + l);
       this.miniContainer.style.height = `${l}%`;
 
       host.appendChild(this.miniContainer);
     });
-    if(this.maxKapacitet - this.trenutniKapacitet > 0)
-    {
-        this.miniContainer = document.createElement("div");
-        this.miniContainer.innerHTML = "Prazno " + (this.maxKapacitet - this.trenutniKapacitet);
-        l = (100 * (this.maxKapacitet - this.trenutniKapacitet)) / h;
-        this.miniContainer.style.height = `${l}%`;
-        host.appendChild(this.miniContainer);
+    if (this.maxKapacitet - this.trenutniKapacitet > 0) {
+      this.miniContainer = document.createElement("div");
+      this.miniContainer.innerHTML =
+        "Prazno " + (this.maxKapacitet - this.trenutniKapacitet);
+      l = (100 * (this.maxKapacitet - this.trenutniKapacitet)) / h;
+      this.miniContainer.style.height = `${l}%`;
+      host.appendChild(this.miniContainer);
     }
   }
 }
