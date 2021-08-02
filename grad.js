@@ -1,3 +1,4 @@
+import { Hrana } from "./hrana.js";
 import { Hranilica } from "./hranilica.js";
 import { Lokacija } from "./lokacija.js";
 
@@ -65,7 +66,8 @@ export class Grad {
     dugme.classList.add("btnDodajLokaciju");
     dugme.onclick = () => {
       console.log("KLIK NA NOVU LOKACIJU");
-      const naziv = div.querySelector("#nazivLokacijaNova").value;
+      let naziv = div.querySelector("#nazivLokacijaNova").value;
+      naziv = naziv.replace(/\s+/g, '');
       const kapacitet = parseInt(div.querySelector("#kapLokacijaNova").value);
       console.log(`Naziv lokacije ${naziv}, Kapacitet lokacije ${kapacitet}`);
       if (naziv && kapacitet) {
@@ -105,7 +107,7 @@ export class Grad {
     });
 
     labela = document.createElement("label");
-    labela.innerHTML = "Max kapacitet ";
+    labela.innerHTML = "Max kapacitet(gr) ";
     div.appendChild(labela);
     let input = document.createElement("input");
     input.setAttribute("type", "number");
@@ -133,8 +135,7 @@ export class Grad {
           document.body.innerHTML = "";
           this.CrtajSve(document.body);
           console.log(objLokacija.hranilice);
-        }
-        else alert("Nema mesta za vise hranilica");
+        } else alert("Nema mesta za vise hranilica");
       } else {
         alert("Molimo Vas da izaberete odgovarajuce podatke");
       }
@@ -186,7 +187,7 @@ export class Grad {
     option.text = "Meso";
     select.appendChild(option);
     labela = document.createElement("label");
-    labela.innerHTML = "Kolicina ";
+    labela.innerHTML = "Kolicina(gr) ";
     div.appendChild(labela);
     let input = document.createElement("input");
     input.setAttribute("type", "number");
@@ -208,21 +209,22 @@ export class Grad {
       console.log("KLIK NA DODAJ HRANU");
       const lokacijaNaziv = div.querySelector("#selectLokacija").value;
       const tipHrane = div.querySelector("#selectTipHrane").value;
-      const kolicina = div.querySelector("#kolicinaHrane").value;
+      const kolicina = parseInt(div.querySelector("#kolicinaHrane").value);
       const indx = div.querySelector("#indexHranilice").value;
       console.log(
         `selektovana lokacija ${lokacijaNaziv}, tip hrane ${tipHrane}, kolicina ${kolicina}, hranilica po redu: ${indx}`
       );
+      const novaHrana = new Hrana(tipHrane, kolicina);
       if (this.lokacije.length - 1 > indx) {
-        console.log("MOZE");
-        console.log(this.lokacije, lokacijaNaziv);
         const objLokacija = this.lokacije.find(
           (lokacija) => lokacija.nazivLokacije === lokacijaNaziv
         );
         const objHranilica = objLokacija.hranilice[indx];
-        console.log(objLokacija, objHranilica);
-
-        if (objHranilica.DodajHranu(tipHrane, kolicina)) {
+        console.log(objHranilica);
+        const fillParentDiv = document.querySelector(`#${lokacijaNaziv}`);
+        const fill = fillParentDiv.querySelectorAll(".hranilica");
+        console.log(fillParentDiv ,fill[indx] + "FILL");
+        if (objHranilica.DodajHranu(novaHrana, fill[indx])) {
           //DORADITI
         } else {
           alert("Nema dovoljno mesta u hranilici, izaberite drugu");

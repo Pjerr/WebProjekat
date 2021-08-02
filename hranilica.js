@@ -1,41 +1,86 @@
 //BONUS - probaj da imprelentiras da izbacujes odredjenu kolicinu neke hrane
-export class Hranilica{
-    constructor(trenutniKapacitet, maxKapacitet){
-        this.hrana=[];
-        this.maxKapacitet = maxKapacitet;
-        this.trenutniKapacitet = trenutniKapacitet;
-        this.miniContainer = null;
-        this.boje = ["#c2746e", "#70b7c2"]; //0->meso, 1->granule
-    }
+export class Hranilica {
+  constructor(trenutniKapacitet, maxKapacitet) {
+    this.hrana = [];
+    this.maxKapacitet = maxKapacitet;
+    this.trenutniKapacitet = trenutniKapacitet;
+    this.miniContainer = null;
+  }
 
-    CrtajHranilicu(host){
-        this.miniContainer = document.createElement("div");
-        this.miniContainer.classList.add("hranilica");
-        this.miniContainer.innerHTML = "Prazno " + this.maxKapacitet;
-        host.appendChild(this.miniContainer);
-    }
+  //nekako setujemo height na nesto a posle u procentima od toga kaliramo punjenja
+  CrtajHranilicu(host) {
+    this.miniContainer = document.createElement("div");
+    this.miniContainer.classList.add("hranilica");
+    this.miniContainer.innerHTML = "Prazno " + this.maxKapacitet;
+    host.appendChild(this.miniContainer);
+  }
 
-    DodajHranu(hrana, kolicina){
-        if(this.trenutniKapacitet + kolicina <= this.maxKapacitet)
-        {
-            let div;
-            if(hrana.tip=="Meso"){
-                console.log("dodajem meso");
-                
-            }
-            else{
-                console.log("dodajem granule");
-
-            }
-            this.trenutniKapacitet += kolicina;
-            this.hrana.push(hrana);
-        }
-        else {
-            console.log("NEMA MESTA");
-            return false;
-        }
+  DodajHranu(hranaZaDodavanje, host) {
+    console.log(hranaZaDodavanje);
+    const hranaUNizu = this.hrana.find(
+      (hrana) => hranaZaDodavanje.tip === hrana.tip
+    );
+    console.log("HRANA " + hranaUNizu);
+    //ako postoji vec ta hrana u hranilici samo dodamo jos kolicinu ako ima mesta
+    if (hranaUNizu) {
+      if (
+        this.trenutniKapacitet + hranaZaDodavanje.trenutnaKolicina <=
+        this.maxKapacitet
+      ) {
+        hranaUNizu.trenutnaKolicina += hranaZaDodavanje.trenutnaKolicina;
+        this.trenutniKapacitet += hranaZaDodavanje.trenutnaKolicina;
+        this.CrtajHranu(host);
         console.log(this.hrana);
         return true;
+      } else return false;
     }
+    //ne postoji hrana u nizu
+    else {
+      if (
+        this.trenutniKapacitet + hranaZaDodavanje.trenutnaKolicina <=
+        this.maxKapacitet
+      ) {
+        this.hrana.push(hranaZaDodavanje);
+        this.trenutniKapacitet += hranaZaDodavanje.trenutnaKolicina;
+        this.CrtajHranu(host);
+        console.log(this.hrana);
+        return true;
+      } else return false;
+    }
+  }
+  //mora da se nekako skaliraju brojke
+  CrtajHranu(host) {
+    host.innerHTML = "";
+    console.log(host);
+    const h = this.maxKapacitet;
+    let y = 0; //inicjalno nema nicega u hranilici
+    let x = 0;
+    let l;
+    this.hrana.forEach((hrana) => {
+      x = hrana.trenutnaKolicina;
+      this.miniContainer = document.createElement("div");
+      if (hrana.tip === "Granule") {
+        this.miniContainer.classList.add("fillGranule");
+        this.miniContainer.innerHTML = "Granule " + hrana.trenutnaKolicina;
+      } else {
+        this.miniContainer.classList.add("fillMeso");
+        this.miniContainer.innerHTML = "Meso " + hrana.trenutnaKolicina;
+      }
+      console.log(h,x,y);
+      //formula ne valja kada se dodaje sledeci tip hrane
+      l = ((100 * x) / h);
+      console.log("fillWidth "+l);
+      this.miniContainer.style.height = `${l}%`;
 
+      host.appendChild(this.miniContainer);
+    });
+    if(this.maxKapacitet - this.trenutniKapacitet > 0)
+    {
+        this.miniContainer = document.createElement("div");
+        this.miniContainer.innerHTML = "Prazno " + (this.maxKapacitet - this.trenutniKapacitet);
+        l = (100 * (this.maxKapacitet - this.trenutniKapacitet)) / h;
+        this.miniContainer.style.height = `${l}%`;
+        host.appendChild(this.miniContainer);
+    }
+  }
 }

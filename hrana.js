@@ -1,5 +1,6 @@
 export class Hrana{
-    constructor(tip){
+    constructor(tip, trenutnaKolicina){
         this.tip = tip;
+        this.trenutnaKolicina = trenutnaKolicina;
     }
 }

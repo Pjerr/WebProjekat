@@ -5,27 +5,32 @@ import { Lokacija } from "./lokacija.js";
 
 //HRANA I HRANILICE
 const hranilica1 = new Hranilica(0, 1000);
-const hranilica2 = new Hranilica(0, 500)
-
+const hranilica2 = new Hranilica(0, 500);
+const hranilica3 = new Hranilica(0, 500);
+const hranilica4 = new Hranilica(0, 1000);
+const hranilica5 = new Hranilica(0, 500);
+const hranilica6 = new Hranilica(0, 500);
+const hranilica7 = new Hranilica(0, 1000);
+const hranilica8 = new Hranilica(0, 500);
+const hranilica9 = new Hranilica(0, 500);
 
 //LOKACIJE
 const lokacija1 = new Lokacija(0, 5, "Palilula");
 lokacija1.DodajHranilicu(hranilica1);
 lokacija1.DodajHranilicu(hranilica2);
 
-const lokacija2 = new Lokacija(0,2, "Lokacija 2");
-// lokacija2.DodajHranilicu(hranilica1);
+const lokacija2 = new Lokacija(0,2, "Lokacija2");
 
-const lokacija3 = new Lokacija(0,2, "Lokacija 3");
-lokacija3.DodajHranilicu(hranilica1);
-lokacija3.DodajHranilicu(hranilica1);
-lokacija3.DodajHranilicu(hranilica1);
-lokacija3.DodajHranilicu(hranilica1);
-lokacija3.DodajHranilicu(hranilica1);
+const lokacija3 = new Lokacija(0,10, "Lokacija3");
+lokacija3.DodajHranilicu(hranilica3);
+lokacija3.DodajHranilicu(hranilica4);
+lokacija3.DodajHranilicu(hranilica5);
+lokacija3.DodajHranilicu(hranilica6);
+lokacija3.DodajHranilicu(hranilica7);
 
-const lokacija4 = new Lokacija(0,2, "Lokacija 4");
-lokacija4.DodajHranilicu(hranilica1);
-lokacija4.DodajHranilicu(hranilica2);
+const lokacija4 = new Lokacija(0,4, "Lokacija4");
+lokacija4.DodajHranilicu(hranilica8);
+lokacija4.DodajHranilicu(hranilica9);
 
 //GRADOVI
 const grad1 = new Grad();

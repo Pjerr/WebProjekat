@@ -7,8 +7,9 @@ export class Lokacija{
         this.miniContainer = null;
     }
 
-    CrtajLokaciju(host){    
+    CrtajLokaciju(host){   
         this.miniContainer = document.createElement("div");
+        this.miniContainer.id = this.nazivLokacije;
         this.miniContainer.classList.add("lokacija");
         host.appendChild(this.miniContainer);
 
@@ -22,7 +23,6 @@ export class Lokacija{
     }
 
     DodajHranilicu(hranilica){
-        console.log(this.trenutniKapacitet, this.maxKapacitet);
         if(this.trenutniKapacitet + 1 <= this.maxKapacitet)
         {
             this.trenutniKapacitet++;
