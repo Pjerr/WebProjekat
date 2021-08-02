@@ -21,31 +21,70 @@ export class Grad {
     this.CrtajFrmLokacija(this.miniContainer);
     this.CrtajFrmHranilica(this.miniContainer);
     this.CrtajFrmHrana(this.miniContainer);
+    this.CrtajDugmeJedi(this.miniContainer);
   }
 
-  OsveziFormu(host){
+  OsveziFormu(host) {
     this.CrtajFrmLokacija(host);
     this.CrtajFrmHranilica(host);
     this.CrtajFrmHrana(host);
+    this.CrtajDugmeJedi(host);
   }
 
-  CrtajFrmGrad(host) {
-    let div = document.createElement("div");
-    div.classList.add("frmGrad");
-    host.appendChild(div);
-    let naslov = document.createElement("h4");
-    naslov.innerHTML = "Dodaj grad";
-    div.appendChild(naslov);
-    let labela = document.createElement("label");
-    labela.innerHTML = "Naziv grada ";
+  CrtajDugmeJedi(host) {
+    const div = document.createElement("div");
+    div.classList.add("dugmeJediDiv");
+    const labela = document.createElement("lablel");
+    labela.innerHTML = "Simulacija kada psi jedu hranu iz hranilica";
     div.appendChild(labela);
-    let input = document.createElement("input");
-    div.appendChild(input);
-    let dugme = document.createElement("button");
-    dugme.innerHTML = "Dodaj novi grad";
-    dugme.classList.add("btnDodajGrad");
+    const dugme = document.createElement("button");
+    dugme.innerHTML = "Jedi";
+    dugme.onclick = () => {
+      this.lokacije.forEach((lokacija) => {
+        if (lokacija.hranilice.length > 0) {
+          let fillDiv = document.querySelector(`.${lokacija.nazivLokacije}`);
+          lokacija.hranilice.forEach((hranilica, index) => {
+            let fill = fillDiv.querySelectorAll(".hranilica");
+            if (hranilica.trenutniKapacitet > 0) {
+              hranilica.hrana.forEach((hrana, index) => {
+                let hranaPojedena = Math.round(
+                  Math.random() * hrana.trenutnaKolicina
+                );
+                hrana.trenutnaKolicina -= hranaPojedena;
+                if (hrana.trenutnaKolicina == 0) {
+                  hranilica.hrana.splice(index, 1);
+                }
+                hranilica.trenutniKapacitet -= hranaPojedena;
+              });
+            }
+            console.log(fillDiv, fill, index);
+            hranilica.CrtajHranu(fill[index]);
+          });
+        }
+      });
+      //treba da nacrta sve opet kako treba
+    };
     div.appendChild(dugme);
+    host.appendChild(div);
   }
+
+  // CrtajFrmGrad(host) {
+  //   let div = document.createElement("div");
+  //   div.classList.add("frmGrad");
+  //   host.appendChild(div);
+  //   let naslov = document.createElement("h4");
+  //   naslov.innerHTML = "Dodaj grad";
+  //   div.appendChild(naslov);
+  //   let labela = document.createElement("label");
+  //   labela.innerHTML = "Naziv grada ";
+  //   div.appendChild(labela);
+  //   let input = document.createElement("input");
+  //   div.appendChild(input);
+  //   let dugme = document.createElement("button");
+  //   dugme.innerHTML = "Dodaj novi grad";
+  //   dugme.classList.add("btnDodajGrad");
+  //   div.appendChild(dugme);
+  // }
 
   CrtajFrmLokacija(host) {
     let div = document.createElement("div");
@@ -58,7 +97,7 @@ export class Grad {
     labela.innerHTML = "Naziv lokacije ";
     div.appendChild(labela);
     let input = document.createElement("input");
-    input.classList.add("nazivLokacijaNova")
+    input.classList.add("nazivLokacijaNova");
     div.appendChild(input);
     labela = document.createElement("label");
     labela.innerHTML = "Max hranilica ";
@@ -81,7 +120,7 @@ export class Grad {
         this.DodajLokaciju(novaLokacija);
         let div = document.createElement("div");
         div.classList.add("lokacija");
-        div.id = naziv; //ZAMENI
+        div.classList.add(naziv);
         let divZaNaslov = document.createElement("div");
         let naslov = document.createElement("h3");
         naslov.innerHTML = naziv;
@@ -147,7 +186,7 @@ export class Grad {
       const objLokacija = this.lokacije.find(
         (lokacija) => lokacija.nazivLokacije === lokacijaNaziv
       );
-      
+
       const lokacijaDiv = document.querySelector(`.${lokacijaNaziv}`);
 
       if (objLokacija && kapacitet > 0) {
@@ -186,7 +225,7 @@ export class Grad {
     option.text = "";
     option.value = -1;
     select.appendChild(option);
-    this.lokacije.forEach((lokacija, index) => {
+    this.lokacije.forEach((lokacija) => {
       option = document.createElement("option");
       option.text = lokacija.nazivLokacije;
       option.value = lokacija.nazivLokacije;
@@ -236,23 +275,19 @@ export class Grad {
       const kolicina = parseInt(div.querySelector(".kolicinaHrane").value);
       const indx = div.querySelector(".indexHranilice").value;
       const novaHrana = new Hrana(tipHrane, kolicina);
-      if (this.lokacije.length - 1 > indx) {
-        const objLokacija = this.lokacije.find(
-          (lokacija) => lokacija.nazivLokacije === lokacijaNaziv
-        );
+      const objLokacija = this.lokacije.find(
+        (lokacija) => lokacija.nazivLokacije === lokacijaNaziv
+      );
+      if (objLokacija.hranilice.length > indx) {
         const objHranilica = objLokacija.hranilice[indx];
         console.log(objHranilica);
         const fillParentDiv = document.querySelector(`.${lokacijaNaziv}`);
         const fill = fillParentDiv.querySelectorAll(".hranilica");
-        console.log(fillParentDiv, fill[indx] + "FILL");
         if (objHranilica.DodajHranu(novaHrana, fill[indx])) {
         } else {
           alert("Nema dovoljno mesta u hranilici, izaberite drugu");
         }
-      } else {
-        console.log(this.lokacije.length, indx, "NE MOZE");
-        alert("Molimo Vas izaberite odgovarajuce podatke");
-      }
+      } else alert("Ne postoji hranilica sa ovim indexom");
     };
     div.appendChild(dugme);
   }

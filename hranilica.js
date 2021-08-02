@@ -79,4 +79,10 @@ export class Hranilica {
       host.appendChild(this.miniContainer);
     }
   }
+
+  AzurirajHranu(host){
+    this.hrana.forEach((hrana)=>{
+      hrana.CrtajHranu(host);
+    })
+  }
 }
