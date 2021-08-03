@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "dgSpecHash": "tNVHq0qPL1ynBv8X+Vh81WHBFcMICbs1LPRbXJZZFOeMC2O20Hpk8UXppGPJ0zv7TsfdwNAZ9rVZuhfWePWPnQ==",
+  "success": true,
+  "projectFilePath": "D:\\_Faks\\Semestar 5\\Web\\FeedTheDoggos\\api\\api.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\milis\\.nuget\\packages\\microsoft.extensions.apidescription.server\\3.0.0\\microsoft.extensions.apidescription.server.3.0.0.nupkg.sha512",
+    "C:\\Users\\milis\\.nuget\\packages\\microsoft.openapi\\1.2.3\\microsoft.openapi.1.2.3.nupkg.sha512",
+    "C:\\Users\\milis\\.nuget\\packages\\swashbuckle.aspnetcore\\5.6.3\\swashbuckle.aspnetcore.5.6.3.nupkg.sha512",
+    "C:\\Users\\milis\\.nuget\\packages\\swashbuckle.aspnetcore.swagger\\5.6.3\\swashbuckle.aspnetcore.swagger.5.6.3.nupkg.sha512",
+    "C:\\Users\\milis\\.nuget\\packages\\swashbuckle.aspnetcore.swaggergen\\5.6.3\\swashbuckle.aspnetcore.swaggergen.5.6.3.nupkg.sha512",
+    "C:\\Users\\milis\\.nuget\\packages\\swashbuckle.aspnetcore.swaggerui\\5.6.3\\swashbuckle.aspnetcore.swaggerui.5.6.3.nupkg.sha512"
+  ],
+  "logs": []
+}
