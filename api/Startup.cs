@@ -2,10 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using api.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -37,6 +39,9 @@ namespace api
                 builder.AllowAnyMethod()
                        .WithOrigins("https://localhost:5001", "http://localhost:5506");
             }));
+            services.AddDbContext<Context>(options => {
+                options.UseSqlServer(Configuration.GetConnectionString("WebCS"));
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -33,7 +33,7 @@ lokacija4.DodajHranilicu(hranilica8);
 lokacija4.DodajHranilicu(hranilica9);
 
 //GRADOVI
-const grad1 = new Grad();
+const grad1 = new Grad("Nis");
 grad1.DodajLokaciju(lokacija1);
 grad1.DodajLokaciju(lokacija2);
 grad1.DodajLokaciju(lokacija3);

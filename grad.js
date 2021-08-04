@@ -296,6 +296,9 @@ export class Grad {
     this.miniContainer = document.createElement("div");
     this.miniContainer.classList.add("grad");
     host.appendChild(this.miniContainer);
+    let nazivGrada = document.createElement("h2");
+    nazivGrada.innerHTML = `Grad ${this.naziv}`;
+    this.miniContainer.appendChild(nazivGrada);
     this.lokacije.forEach((lokacija) => {
       lokacija.CrtajLokaciju(this.miniContainer);
     });
