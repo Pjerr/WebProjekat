@@ -36,7 +36,10 @@ lokacija4.DodajHranilicu(hranilica9);
 const grad1 = new Grad("Nis");
 grad1.DodajLokaciju(lokacija1);
 grad1.DodajLokaciju(lokacija2);
-grad1.DodajLokaciju(lokacija3);
-grad1.DodajLokaciju(lokacija4);
+
+const grad2 = new Grad("Beograd");
+grad2.DodajLokaciju(lokacija3);
+grad2.DodajLokaciju(lokacija4);
 
 grad1.CrtajSve(document.body);
+grad2.CrtajSve(document.body);

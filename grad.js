@@ -16,8 +16,8 @@ export class Grad {
   CrtajFormu(host) {
     this.miniContainer = document.createElement("div");
     this.miniContainer.classList.add("forma");
+    this.miniContainer.classList.add(`frm${this.naziv.toLowerCase()}`);
     host.appendChild(this.miniContainer);
-    // this.CrtajFrmGrad(this.miniContainer);
     this.CrtajFrmLokacija(this.miniContainer);
     this.CrtajFrmHranilica(this.miniContainer);
     this.CrtajFrmHrana(this.miniContainer);
@@ -68,24 +68,6 @@ export class Grad {
     host.appendChild(div);
   }
 
-  // CrtajFrmGrad(host) {
-  //   let div = document.createElement("div");
-  //   div.classList.add("frmGrad");
-  //   host.appendChild(div);
-  //   let naslov = document.createElement("h4");
-  //   naslov.innerHTML = "Dodaj grad";
-  //   div.appendChild(naslov);
-  //   let labela = document.createElement("label");
-  //   labela.innerHTML = "Naziv grada ";
-  //   div.appendChild(labela);
-  //   let input = document.createElement("input");
-  //   div.appendChild(input);
-  //   let dugme = document.createElement("button");
-  //   dugme.innerHTML = "Dodaj novi grad";
-  //   dugme.classList.add("btnDodajGrad");
-  //   div.appendChild(dugme);
-  // }
-
   CrtajFrmLokacija(host) {
     let div = document.createElement("div");
     div.classList.add("frmLokacija");
@@ -129,10 +111,11 @@ export class Grad {
         let divZaHranilice = document.createElement("div");
         divZaHranilice.classList.add("divZaHranilice");
         div.appendChild(divZaHranilice);
-        const divZaCrtanje = document.querySelector(".grad");
+        console.log(this.naziv.toLowerCase());
+        const divZaCrtanje = document.querySelector(`.${this.naziv.toLowerCase()}`);
         divZaCrtanje.appendChild(div);
 
-        const formaZaCrtanje = document.querySelector(".forma");
+        const formaZaCrtanje = document.querySelector(`.frm${this.naziv.toLowerCase()}`);
         formaZaCrtanje.innerHTML = "";
         this.OsveziFormu(formaZaCrtanje);
       }
@@ -159,6 +142,7 @@ export class Grad {
     option.text = "";
     option.value = -1;
     select.appendChild(option);
+    console.log(this.lokacije);
     this.lokacije.forEach((lokacija, index) => {
       option = document.createElement("option");
       option.text = lokacija.nazivLokacije;
@@ -177,17 +161,16 @@ export class Grad {
     dugme.innerHTML = "Dodaj novu hranilicu";
     dugme.classList.add("btnDodajHranilicu");
     dugme.onclick = () => {
-      console.log("KLIK NA DODAJ HRANILICU");
+
       const kapacitet = parseInt(div.querySelector(".kapHranilicaNova").value);
       const lokacijaNaziv = select.value;
-      console.log(
-        `Kapacitet hranilice ${kapacitet}, selektovana lokacija ${lokacijaNaziv}`
-      );
+      console.log(this.lokacije);
       const objLokacija = this.lokacije.find(
         (lokacija) => lokacija.nazivLokacije === lokacijaNaziv
       );
-
-      const lokacijaDiv = document.querySelector(`.${lokacijaNaziv}`);
+      
+      const divGrad = document.querySelector(`.${this.naziv.toLowerCase()}`);
+      const lokacijaDiv = divGrad.querySelector(`.${lokacijaNaziv}`);
 
       if (objLokacija && kapacitet > 0) {
         console.log("DODAJEM HRANILICU");
@@ -281,7 +264,8 @@ export class Grad {
       if (objLokacija.hranilice.length > indx) {
         const objHranilica = objLokacija.hranilice[indx];
         console.log(objHranilica);
-        const fillParentDiv = document.querySelector(`.${lokacijaNaziv}`);
+        const divGrad = document.querySelector(`.${this.naziv.toLowerCase()}`);
+        const fillParentDiv = divGrad.querySelector(`.${lokacijaNaziv}`);
         const fill = fillParentDiv.querySelectorAll(".hranilica");
         if (objHranilica.DodajHranu(novaHrana, fill[indx])) {
         } else {
@@ -295,6 +279,7 @@ export class Grad {
   CrtajLokacije(host) {
     this.miniContainer = document.createElement("div");
     this.miniContainer.classList.add("grad");
+    this.miniContainer.classList.add(this.naziv.toLowerCase());
     host.appendChild(this.miniContainer);
     let nazivGrada = document.createElement("h2");
     nazivGrada.innerHTML = `Grad ${this.naziv}`;

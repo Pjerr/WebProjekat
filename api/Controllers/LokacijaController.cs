@@ -28,7 +28,7 @@ namespace api.Controllers
         [HttpPost]
         public async Task UpisiLokaciju(int idGrada, [FromBody]Lokacija lok){
             var grad = await Context.Grad.FindAsync(idGrada);
-            lok.Grad = grad;
+            lok.Grad = grad;   
             Context.Lokacije.Add(lok);
             await Context.SaveChangesAsync();
         }

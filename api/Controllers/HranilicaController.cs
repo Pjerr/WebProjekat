@@ -26,11 +26,17 @@ namespace api.Controllers
 
         [Route("UpisiHranilicu/{idLokacije}")]
         [HttpPost]
-        public async Task UpisiHranilicu(int idLokacije, [FromBody]Hranilica hranilica){
+        public async Task<IActionResult> UpisiHranilicu(int idLokacije, [FromBody]Hranilica hranilica){
             var lokacija = await Context.Lokacije.FindAsync(idLokacije);
-            hranilica.Lokacija = lokacija;
-            Context.Hranilice.Add(hranilica);
-            await Context.SaveChangesAsync();
+            if(lokacija.TrenutniKapacitet + 1 <= lokacija.MaxKapacitet)
+            {
+                hranilica.Lokacija = lokacija;
+                lokacija.TrenutniKapacitet++;
+                Context.Hranilice.Add(hranilica);
+                await Context.SaveChangesAsync();
+                return StatusCode(200,"Uspesno dodata hranilica");
+            }
+            else return StatusCode(400, "Nema mesta u ovoj lokaciji");
         }
 
         [Route("IzmeniHranilicu")]
@@ -40,12 +46,20 @@ namespace api.Controllers
             await Context.SaveChangesAsync();
         }
 
-        [Route("ObrisiHranilicu/{idHranilice}")]
+        [Route("ObrisiHranilicu/{idHranilice}/{idLokacije}")]
         [HttpDelete]
-        public async Task ObrisiHranilicu(int idHranilice){
+        public async Task<IActionResult> ObrisiHranilicu(int idHranilice, int idLokacije){
+            //pre brisanja hranilice mora da uradim lokacija.TrenutniKapacitet--;
+            var lokacija = await Context.Lokacije.FindAsync(idLokacije);
             var hranilica = await Context.FindAsync<Hranilica>(idHranilice);
-            Context.Remove(hranilica);
-            await Context.SaveChangesAsync();
+            if(lokacija!=null && hranilica!=null)
+            {
+                lokacija.TrenutniKapacitet--;
+                Context.Remove(hranilica);
+                await Context.SaveChangesAsync();
+                return StatusCode(200,"Uspesno obrisana hranilica");
+            }
+            else return StatusCode(400,"Ne postoji ili hranilica ili lokacija");
         }
     }
 }

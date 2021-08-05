@@ -26,11 +26,29 @@ namespace api.Controllers
 
         [Route("UpisiHranu/{idHranilice}")]
         [HttpPost]
-        public async Task UpisiHranu(int idHranilice, [FromBody]Hrana hrana){
+        public async Task<IActionResult> UpisiHranu(int idHranilice, [FromBody]Hrana hrana){
             var hranilica = await Context.Hranilice.FindAsync(idHranilice);
             hrana.Hranilica = hranilica;
-            Context.Hrana.Add(hrana);
-            await Context.SaveChangesAsync();
+            if(hranilica.MaxKapacitet >= hranilica.TrenutniKapacitet + hrana.TrenutnaKolicina)
+            {
+                var postojecaHrana = await Context.Hrana.Where(x=>x.Tip==hrana.Tip && x.Hranilica.ID==hrana.Hranilica.ID).FirstOrDefaultAsync();
+                if(postojecaHrana==null) //ako ne postoji hrana u hranilici onda dodajem hranu u hranilicu
+                {
+                    // hrana.Hranilica = hranilica;
+                    hranilica.TrenutniKapacitet += hrana.TrenutnaKolicina;
+                    Context.Hrana.Add(hrana);
+                }
+                else {
+                    postojecaHrana.TrenutnaKolicina+=hrana.TrenutnaKolicina;
+                    hranilica.TrenutniKapacitet+=hrana.TrenutnaKolicina;
+                    Context.Update<Hrana>(postojecaHrana);
+                }
+                Context.Update<Hranilica>(hranilica);
+                await Context.SaveChangesAsync();
+                return StatusCode(200, "Uspesno");
+            }
+            else 
+                return StatusCode(400, "Nema mesta u hranilici");
         }
 
         [Route("IzmeniHranu")]
@@ -40,12 +58,19 @@ namespace api.Controllers
             await Context.SaveChangesAsync();
         }
 
-        [Route("ObrisiHranu/{idHrane}")]
+        [Route("ObrisiHranu/{idHrane}/{idHranilice}")]
         [HttpDelete]
-        public async Task ObrisiHranu(int idHrane){
+        public async Task<IActionResult> ObrisiHranu(int idHrane, int idHranilice){
+            var hranilica = await Context.Hranilice.FindAsync(idHranilice);
             var hrana = await Context.Hrana.FindAsync(idHrane);
-            Context.Remove(hrana);
-            await Context.SaveChangesAsync();
+            if(hranilica!=null && hrana !=null)
+            {
+                hranilica.TrenutniKapacitet-=hrana.TrenutnaKolicina;
+                Context.Remove(hrana);
+                await Context.SaveChangesAsync();
+                return StatusCode(200,"Uspesno izbrisana hrana");
+            }
+            else return StatusCode(400,"Ne postoji ili hrana ili hranilica");
         }
     }
 }

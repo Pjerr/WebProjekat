@@ -18,7 +18,7 @@ namespace api.Controllers
             Context = context;
         }
 
-        [Route("GetGrad")]
+        [Route("GetAllGradovi")]
         [HttpGet]
         public async Task<List<Grad>> GetGradovi(){
             return await Context.Grad.Include(p=>p.Lokacije).ThenInclude(h=>h.Hranilice).ThenInclude(c=>c.Hrana).ToListAsync();
