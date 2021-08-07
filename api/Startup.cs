@@ -37,7 +37,11 @@ namespace api
             services.AddCors((p) => p.AddPolicy("CORS", builder =>
             {
                 builder.AllowAnyMethod()
-                       .WithOrigins("https://localhost:5001", "http://localhost:5506");
+                       .AllowAnyHeader()
+                       .WithOrigins(new string[]{
+                           "http://127.0.0.1:5500"
+                       });
+
             }));
             services.AddDbContext<Context>(options => {
                 options.UseSqlServer(Configuration.GetConnectionString("WebCS"));

@@ -1,26 +1,61 @@
 //BONUS - probaj da imprelentiras da izbacujes odredjenu kolicinu neke hrane
 export class Hranilica {
-  constructor(trenutniKapacitet, maxKapacitet) {
+  constructor(id ,trenutniKapacitet, maxKapacitet) {
+    this.id = id;
     this.hrana = [];
     this.maxKapacitet = maxKapacitet;
     this.trenutniKapacitet = trenutniKapacitet;
     this.miniContainer = null;
+    this.pomContainer = null;
   }
 
   //nekako setujemo height na nesto a posle u procentima od toga kaliramo punjenja
   CrtajHranilicu(host) {
     this.miniContainer = document.createElement("div");
     this.miniContainer.classList.add("hranilica");
-    this.miniContainer.innerHTML = "Prazno " + this.maxKapacitet;
-    host.appendChild(this.miniContainer);
+    if(this.trenutniKapacitet == 0)
+    {
+      this.miniContainer.innerHTML = "Prazno " + this.maxKapacitet;
+      host.appendChild(this.miniContainer);
+    }
+    else {
+      this.CrtajHranu(this.miniContainer);
+      host.appendChild(this.miniContainer);
+    }
   }
 
-  DodajHranu(hranaZaDodavanje, host) {
-    console.log(hranaZaDodavanje);
+  DodajHranu(hranaZaDodavanje){
     const hranaUNizu = this.hrana.find(
       (hrana) => hranaZaDodavanje.tip === hrana.tip
     );
-    console.log("HRANA " + hranaUNizu);
+    //ako postoji vec ta hrana u hranilici samo dodamo jos kolicinu ako ima mesta
+    if (hranaUNizu) {
+      if (
+        this.trenutniKapacitet + hranaZaDodavanje.trenutnaKolicina <=
+        this.maxKapacitet
+      ) {
+        hranaUNizu.trenutnaKolicina += hranaZaDodavanje.trenutnaKolicina;
+        this.trenutniKapacitet += hranaZaDodavanje.trenutnaKolicina;
+        return true;
+      } else return false;
+    }
+    //ne postoji hrana u nizu
+    else {
+      if (
+        this.trenutniKapacitet + hranaZaDodavanje.trenutnaKolicina <=
+        this.maxKapacitet
+      ) {
+        this.hrana.push(hranaZaDodavanje);
+        this.trenutniKapacitet += hranaZaDodavanje.trenutnaKolicina;
+        return true;
+      } else return false;
+    }
+  }
+
+  DodajICrtajHranu(hranaZaDodavanje, host) {
+    const hranaUNizu = this.hrana.find(
+      (hrana) => hranaZaDodavanje.tip === hrana.tip
+    );
     //ako postoji vec ta hrana u hranilici samo dodamo jos kolicinu ako ima mesta
     if (hranaUNizu) {
       if (
@@ -50,34 +85,34 @@ export class Hranilica {
   }
 
   CrtajHranu(host) {
+    console.log(this.hrana);
     host.innerHTML = "";
     const h = this.maxKapacitet;
     let x = 0;
     let l;
     this.hrana.forEach((hrana) => {
       x = hrana.trenutnaKolicina;
-      this.miniContainer = document.createElement("div");
+      this.pomContainer = document.createElement("div");
       if (hrana.tip === "Granule") {
-        this.miniContainer.classList.add("fillGranule");
-        this.miniContainer.innerHTML = "Granule " + hrana.trenutnaKolicina;
+        this.pomContainer.classList.add("fillGranule");
+        this.pomContainer.innerHTML = "Granule " + hrana.trenutnaKolicina;
       } else {
-        this.miniContainer.classList.add("fillMeso");
-        this.miniContainer.innerHTML = "Meso " + hrana.trenutnaKolicina;
+        this.pomContainer.classList.add("fillMeso");
+        this.pomContainer.innerHTML = "Meso " + hrana.trenutnaKolicina;
       }
       l = (100 * x) / h;
-      console.log("fillWidth " + l);
-      this.miniContainer.style.height = `${l}%`;
-
-      host.appendChild(this.miniContainer);
+      this.pomContainer.style.height = `${l}%`;
+      host.appendChild(this.pomContainer);
     });
     if (this.maxKapacitet - this.trenutniKapacitet > 0) {
-      this.miniContainer = document.createElement("div");
-      this.miniContainer.innerHTML =
+      this.pomContainer = document.createElement("div");
+      this.pomContainer.innerHTML =
         "Prazno " + (this.maxKapacitet - this.trenutniKapacitet);
       l = (100 * (this.maxKapacitet - this.trenutniKapacitet)) / h;
-      this.miniContainer.style.height = `${l}%`;
-      host.appendChild(this.miniContainer);
+      this.pomContainer.style.height = `${l}%`;
+      host.appendChild(this.pomContainer);
     }
+    this.pomContainer = null;
   }
 
   AzurirajHranu(host){

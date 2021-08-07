@@ -1,5 +1,6 @@
 export class Lokacija{
-    constructor(trenutniKapacitet, maxKapacitet, nazivLokacije){
+    constructor(id, trenutniKapacitet, maxKapacitet, nazivLokacije){
+        this.id = id;
         this.trenutniKapacitet = trenutniKapacitet;
         this.maxKapacitet = maxKapacitet;
         this.nazivLokacije = nazivLokacije;

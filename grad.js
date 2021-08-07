@@ -142,7 +142,6 @@ export class Grad {
     option.text = "";
     option.value = -1;
     select.appendChild(option);
-    console.log(this.lokacije);
     this.lokacije.forEach((lokacija, index) => {
       option = document.createElement("option");
       option.text = lokacija.nazivLokacije;
@@ -252,6 +251,7 @@ export class Grad {
     dugme.innerHTML = "Dodaj novu hranu";
     dugme.classList.add("btnDodajHranu");
     dugme.onclick = () => {
+      
       console.log("KLIK NA DODAJ HRANU");
       const lokacijaNaziv = div.querySelector(".selectLokacija").value;
       const tipHrane = div.querySelector(".selectTipHrane").value;
@@ -267,7 +267,7 @@ export class Grad {
         const divGrad = document.querySelector(`.${this.naziv.toLowerCase()}`);
         const fillParentDiv = divGrad.querySelector(`.${lokacijaNaziv}`);
         const fill = fillParentDiv.querySelectorAll(".hranilica");
-        if (objHranilica.DodajHranu(novaHrana, fill[indx])) {
+        if (objHranilica.DodajICrtajHranu(novaHrana, fill[indx])) {
         } else {
           alert("Nema dovoljno mesta u hranilici, izaberite drugu");
         }
