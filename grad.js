@@ -3,7 +3,8 @@ import { Hranilica } from "./hranilica.js";
 import { Lokacija } from "./lokacija.js";
 
 export class Grad {
-  constructor(naziv) {
+  constructor(id, naziv) {
+    this.id = id,
     this.lokacije = [];
     this.naziv = naziv;
     this.miniContainer = null;
@@ -22,6 +23,7 @@ export class Grad {
     this.CrtajFrmHranilica(this.miniContainer);
     this.CrtajFrmHrana(this.miniContainer);
     this.CrtajDugmeJedi(this.miniContainer);
+    this.CrtajDugmeObrisi(this.miniContainer);
   }
 
   OsveziFormu(host) {
@@ -29,6 +31,7 @@ export class Grad {
     this.CrtajFrmHranilica(host);
     this.CrtajFrmHrana(host);
     this.CrtajDugmeJedi(host);
+    this.CrtajDugmeObrisi(host);
   }
 
   CrtajDugmeJedi(host) {
@@ -40,6 +43,7 @@ export class Grad {
     const dugme = document.createElement("button");
     dugme.innerHTML = "Jedi";
     dugme.onclick = () => {
+      //api call za jedenje
       this.lokacije.forEach((lokacija) => {
         if (lokacija.hranilice.length > 0) {
           let fillDiv = document.querySelector(`.${lokacija.nazivLokacije}`);
@@ -48,7 +52,7 @@ export class Grad {
             if (hranilica.trenutniKapacitet > 0) {
               hranilica.hrana.forEach((hrana, index) => {
                 let hranaPojedena = Math.round(
-                  Math.random() * hrana.trenutnaKolicina
+                  Math.random() * hrana.trenutnaKolicina / 2
                 );
                 hrana.trenutnaKolicina -= hranaPojedena;
                 if (hrana.trenutnaKolicina == 0) {
@@ -62,7 +66,23 @@ export class Grad {
           });
         }
       });
-      //treba da nacrta sve opet kako treba
+    };
+    div.appendChild(dugme);
+    host.appendChild(div);
+  }
+
+
+  CrtajDugmeObrisi(host){
+    const div = document.createElement("div");
+    div.classList.add("dugmeObrisiGrad");
+    const labela = document.createElement("lablel");
+    labela.innerHTML = "Obrisi ovaj grad";
+    div.appendChild(labela);
+    const dugme = document.createElement("button");
+    dugme.innerHTML = "Obrisi";
+    dugme.onclick = () => {
+      //api call za brisanje
+      console.log("BRISEM GRAD");
     };
     div.appendChild(dugme);
     host.appendChild(div);
@@ -96,28 +116,53 @@ export class Grad {
       let naziv = div.querySelector(".nazivLokacijaNova").value;
       naziv = naziv.replace(/\s+/g, "");
       const kapacitet = parseInt(div.querySelector(".kapLokacijaNova").value);
+      console.log(kapacitet);
       console.log(`Naziv lokacije ${naziv}, Kapacitet lokacije ${kapacitet}`);
       if (naziv && kapacitet) {
-        const novaLokacija = new Lokacija(0, kapacitet, naziv);
+        const novaLokacija = new Lokacija(0, 0, kapacitet, naziv);
+        console.log(novaLokacija);
         this.DodajLokaciju(novaLokacija);
         let div = document.createElement("div");
         div.classList.add("lokacija");
         div.classList.add(naziv);
         let divZaNaslov = document.createElement("div");
         let naslov = document.createElement("h3");
-        naslov.innerHTML = naziv;
+        naslov.classList.add("nazivLokacije");
+        naslov.innerHTML = `${naziv} 0/${kapacitet}`;
         divZaNaslov.appendChild(naslov);
         div.appendChild(divZaNaslov);
         let divZaHranilice = document.createElement("div");
         divZaHranilice.classList.add("divZaHranilice");
         div.appendChild(divZaHranilice);
         console.log(this.naziv.toLowerCase());
-        const divZaCrtanje = document.querySelector(`.${this.naziv.toLowerCase()}`);
+        const divZaCrtanje = document.querySelector(
+          `.${this.naziv.toLowerCase()}`
+        );
         divZaCrtanje.appendChild(div);
 
-        const formaZaCrtanje = document.querySelector(`.frm${this.naziv.toLowerCase()}`);
+        const formaZaCrtanje = document.querySelector(
+          `.frm${this.naziv.toLowerCase()}`
+        );
         formaZaCrtanje.innerHTML = "";
         this.OsveziFormu(formaZaCrtanje);
+
+        let data = { maxKapacitet: kapacitet, trenutniKapacitet: 0, nazivLokacije: naziv };
+        console.log(data);
+        console.log(this.id, this.naziv);
+        fetch(
+          `https://localhost:5001/Lokacija/UpisiLokaciju/${this.id}`,
+          {
+            method: "POST",
+            body: JSON.stringify(data),
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        )
+          .then((res) => {
+            console.log("Request complete! response:", res);
+          })
+          .catch((er) => console.log(er));
       }
     };
     div.appendChild(dugme);
@@ -160,26 +205,46 @@ export class Grad {
     dugme.innerHTML = "Dodaj novu hranilicu";
     dugme.classList.add("btnDodajHranilicu");
     dugme.onclick = () => {
-
       const kapacitet = parseInt(div.querySelector(".kapHranilicaNova").value);
       const lokacijaNaziv = select.value;
       console.log(this.lokacije);
       const objLokacija = this.lokacije.find(
         (lokacija) => lokacija.nazivLokacije === lokacijaNaziv
       );
-      
+
       const divGrad = document.querySelector(`.${this.naziv.toLowerCase()}`);
       const lokacijaDiv = divGrad.querySelector(`.${lokacijaNaziv}`);
-
+      const nazivLokacije = lokacijaDiv.querySelector(".nazivLokacije");
       if (objLokacija && kapacitet > 0) {
         console.log("DODAJEM HRANILICU");
-        const hranilica = new Hranilica(0, kapacitet);
+        const hranilica = new Hranilica(0, 0, kapacitet);
+        console.log(hranilica);
         if (objLokacija.DodajHranilicu(hranilica)) {
+          nazivLokacije.innerHTML = "";
+          nazivLokacije.innerHTML = `${objLokacija.nazivLokacije} ${objLokacija.trenutniKapacitet}/${objLokacija.maxKapacitet}`;
           let div = document.createElement("div");
           div.classList.add("hranilica");
           div.innerHTML = "Prazno " + kapacitet;
           const divZaHranilice = lokacijaDiv.querySelector(".divZaHranilice");
           divZaHranilice.appendChild(div);
+
+          let data = { maxKapacitet: kapacitet, trenutniKapacitet: 0 };
+          console.log(data);
+          console.log(objLokacija.id);
+          fetch(
+            `https://localhost:5001/Hranilica/UpisiHranilicu/${objLokacija.id}`,
+            {
+              method: "POST",
+              body: JSON.stringify(data),
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          )
+            .then((res) => {
+              console.log("Request complete! response:", res);
+            })
+            .catch((er) => console.log(er));
         } else alert("Nema mesta za vise hranilica");
       } else {
         alert("Molimo Vas da izaberete odgovarajuce podatke");
@@ -251,23 +316,34 @@ export class Grad {
     dugme.innerHTML = "Dodaj novu hranu";
     dugme.classList.add("btnDodajHranu");
     dugme.onclick = () => {
-      
       console.log("KLIK NA DODAJ HRANU");
       const lokacijaNaziv = div.querySelector(".selectLokacija").value;
       const tipHrane = div.querySelector(".selectTipHrane").value;
       const kolicina = parseInt(div.querySelector(".kolicinaHrane").value);
       const indx = div.querySelector(".indexHranilice").value;
-      const novaHrana = new Hrana(tipHrane, kolicina);
+      const novaHrana = new Hrana(0, tipHrane, kolicina);
       const objLokacija = this.lokacije.find(
         (lokacija) => lokacija.nazivLokacije === lokacijaNaziv
       );
       if (objLokacija.hranilice.length > indx) {
         const objHranilica = objLokacija.hranilice[indx];
-        console.log(objHranilica);
         const divGrad = document.querySelector(`.${this.naziv.toLowerCase()}`);
         const fillParentDiv = divGrad.querySelector(`.${lokacijaNaziv}`);
         const fill = fillParentDiv.querySelectorAll(".hranilica");
+        console.log(fill[indx], novaHrana);
         if (objHranilica.DodajICrtajHranu(novaHrana, fill[indx])) {
+          let data = { tip: tipHrane, trenutnaKolicina: kolicina };
+          console.log(data);
+          console.log(objHranilica.id);
+          fetch(`https://localhost:5001/Hrana/UpisiHranu/${objHranilica.id}`, {
+            method: "POST",
+            body: JSON.stringify(data),
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          }).then(res => {
+            console.log("Request complete! response:", res);
+          }).catch(er=> console.log(er));
         } else {
           alert("Nema dovoljno mesta u hranilici, izaberite drugu");
         }

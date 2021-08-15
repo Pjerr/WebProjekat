@@ -15,9 +15,10 @@ export class Lokacija{
         host.appendChild(this.miniContainer);
 
         let div = document.createElement("div");
+        div.classList.add("divNaslov");
         const naslov = document.createElement("h3");
         naslov.classList.add("nazivLokacije");
-        naslov.innerHTML = this.nazivLokacije;
+        naslov.innerHTML = `${this.nazivLokacije} ${this.trenutniKapacitet}/${this.maxKapacitet}`;
         div.appendChild(naslov);
         this.miniContainer.appendChild(div);
         div = document.createElement("div");
