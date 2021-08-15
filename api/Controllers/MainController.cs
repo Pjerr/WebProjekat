@@ -43,12 +43,12 @@ namespace api.Controllers
         }
 
         //doraditi
-        [Route("IzbrisiGrad")]
+        [Route("IzbrisiGrad/{idGrada}")]
         [HttpDelete]
 
-        public async Task IzbrisiGrad(int id)
+        public async Task IzbrisiGrad(int idGrada)
         {
-            var grad = await Context.Grad.Include(p => p.Lokacije).ThenInclude(h => h.Hranilice).ThenInclude(c => c.Hrana).Where(x=>x.ID==id).FirstOrDefaultAsync();
+            var grad = await Context.Grad.Include(p => p.Lokacije).ThenInclude(h => h.Hranilice).ThenInclude(c => c.Hrana).Where(x=>x.ID==idGrada).FirstOrDefaultAsync();
             foreach (var lokacija in grad.Lokacije)
             {
                 foreach (var hranilica in lokacija.Hranilice)
@@ -67,7 +67,7 @@ namespace api.Controllers
 
         [Route("PsiJedu")]
         [HttpPut]
-        public async Task Jedi()
+        public async Task<ActionResult<List<Hranilica>>> Jedi()
         {
             var sveHranilice = await Context.Hranilice.Include(x=>x.Hrana).ToListAsync();
 
@@ -86,6 +86,7 @@ namespace api.Controllers
                 }
             }
             await Context.SaveChangesAsync();
+            return sveHranilice;
         }
     }
 }

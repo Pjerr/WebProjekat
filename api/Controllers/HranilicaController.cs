@@ -26,7 +26,7 @@ namespace api.Controllers
 
         [Route("UpisiHranilicu/{idLokacije}")]
         [HttpPost]
-        public async Task<IActionResult> UpisiHranilicu(int idLokacije, [FromBody]Hranilica hranilica){
+        public async Task<ActionResult<Hranilica>> UpisiHranilicu(int idLokacije, [FromBody]Hranilica hranilica){
             var lokacija = await Context.Lokacije.FindAsync(idLokacije);
             if(lokacija.TrenutniKapacitet + 1 <= lokacija.MaxKapacitet)
             {
@@ -34,7 +34,7 @@ namespace api.Controllers
                 lokacija.TrenutniKapacitet++;
                 Context.Hranilice.Add(hranilica);
                 await Context.SaveChangesAsync();
-                return StatusCode(200,"Uspesno dodata hranilica");
+                return hranilica;
             }
             else return StatusCode(400, "Nema mesta u ovoj lokaciji");
         }

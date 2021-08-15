@@ -1,4 +1,3 @@
-//BONUS - probaj da imprelentiras da izbacujes odredjenu kolicinu neke hrane
 export class Hranilica {
   constructor(id ,trenutniKapacitet, maxKapacitet) {
     this.id = id;
@@ -9,7 +8,6 @@ export class Hranilica {
     this.pomContainer = null;
   }
 
-  //nekako setujemo height na nesto a posle u procentima od toga kaliramo punjenja
   CrtajHranilicu(host) {
     this.miniContainer = document.createElement("div");
     this.miniContainer.classList.add("hranilica");
@@ -28,7 +26,6 @@ export class Hranilica {
     const hranaUNizu = this.hrana.find(
       (hrana) => hranaZaDodavanje.tip === hrana.tip
     );
-    //ako postoji vec ta hrana u hranilici samo dodamo jos kolicinu ako ima mesta
     if (hranaUNizu) {
       if (
         this.trenutniKapacitet + hranaZaDodavanje.trenutnaKolicina <=
