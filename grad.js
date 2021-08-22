@@ -42,10 +42,10 @@ export class Grad {
     const dugme = document.createElement("button");
     dugme.innerHTML = "Jedi";
     dugme.onclick = () => {
-      fetch("https://localhost:5001/Main/PsiJedu", {
+      fetch(`https://localhost:5001/Main/PsiJedu/${this.id}`, {
         method: "PUT",
       }).then((res) => {
-        if (res.ok) {
+        if (res.status == 200) {
             document.body.innerHTML = "";
             fetch(`https://localhost:5001/Main/GetAllGradovi`)
               .then((result) => {

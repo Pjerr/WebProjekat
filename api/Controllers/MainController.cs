@@ -65,28 +65,45 @@ namespace api.Controllers
             await Context.SaveChangesAsync();
         }
 
-        [Route("PsiJedu")]
+        [Route("PsiJedu/{idGrada}")]
         [HttpPut]
-        public async Task<ActionResult<List<Hranilica>>> Jedi()
+        public async Task<IActionResult> Jedi(int idGrada)
         {
-            var sveHranilice = await Context.Hranilice.Include(x=>x.Hrana).ToListAsync();
+            var grad = await Context.Grad.Include(p => p.Lokacije).ThenInclude(h => h.Hranilice).ThenInclude(c => c.Hrana).Where(x=>x.ID==idGrada).FirstOrDefaultAsync();
 
-            foreach (var hranilica in sveHranilice)
-            {
+            // var sveHranilice = await Context.Hranilice.Include(x=>x.Hrana).ToListAsync();
 
-                foreach(var hrana in hranilica.Hrana)
-                {
-                Random rand = new Random();
-                if (hrana.TrenutnaKolicina > 0)
+            foreach(var lokacija in grad.Lokacije){
+                foreach(var hranilica in lokacija.Hranilice){
+                    foreach(var hrana in hranilica.Hrana)
                     {
-                        var pojedenaHrana = rand.Next(1, hrana.TrenutnaKolicina / 2);
-                        hrana.TrenutnaKolicina -= pojedenaHrana;
-                        hranilica.TrenutniKapacitet -= pojedenaHrana;
+                        Random rand = new Random();
+                        if (hrana.TrenutnaKolicina > 0)
+                            {
+                                var pojedenaHrana = rand.Next(1, hrana.TrenutnaKolicina / 2);
+                                hrana.TrenutnaKolicina -= pojedenaHrana;
+                                hranilica.TrenutniKapacitet -= pojedenaHrana;
+                            }
                     }
                 }
             }
+
+            // foreach (var hranilica in sveHranilice)
+            // {
+
+            //     foreach(var hrana in hranilica.Hrana)
+            //     {
+            //     Random rand = new Random();
+            //     if (hrana.TrenutnaKolicina > 0)
+            //         {
+            //             var pojedenaHrana = rand.Next(1, hrana.TrenutnaKolicina / 2);
+            //             hrana.TrenutnaKolicina -= pojedenaHrana;
+            //             hranilica.TrenutniKapacitet -= pojedenaHrana;
+            //         }
+            //     }
+            // }
             await Context.SaveChangesAsync();
-            return sveHranilice;
+            return StatusCode(200, "uspesno pojedena hrana");
         }
     }
 }
