@@ -9,9 +9,11 @@ namespace api.Models{
 
         [Key]
         [Column("id")]
+        [DataType("int")]
         public int ID {get; set;}
 
         [Column("naziv")]
+        [DataType("nvarchar255")]
         [MaxLength(255)]
         public string Naziv {get; set;}
 

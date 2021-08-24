@@ -33,6 +33,47 @@ export class Grad {
     this.CrtajDugmeObrisi(host);
   }
 
+  OsveziPrikaz() {
+    fetch(`https://localhost:5001/Main/GetAllGradovi`)
+      .then((result) => {
+        result.json().then((data) => {
+          console.log(data);
+          data.forEach((grad) => {
+            const noviGrad = new Grad(grad.id, grad.naziv);
+            grad.lokacije.forEach((lokacija) => {
+              const novaLokacija = new Lokacija(
+                lokacija.id,
+                0,
+                lokacija.maxKapacitet,
+                lokacija.nazivLokacije
+              );
+              lokacija.hranilice.forEach((hranilica) => {
+                const novaHranilica = new Hranilica(
+                  hranilica.id,
+                  0,
+                  hranilica.maxKapacitet
+                );
+                hranilica.hrana.forEach((hrana) => {
+                  const novaHrana = new Hrana(
+                    hrana.id,
+                    hrana.tip,
+                    hrana.trenutnaKolicina
+                  );
+                  novaHranilica.DodajHranu(novaHrana);
+                });
+                novaLokacija.DodajHranilicu(novaHranilica);
+              });
+              noviGrad.DodajLokaciju(novaLokacija);
+            });
+            noviGrad.CrtajSve(document.body);
+          });
+        });
+      })
+      .catch((err) => {
+        console.log(console.log(err));
+      });
+  }
+
   CrtajDugmeJedi(host) {
     const div = document.createElement("div");
     div.classList.add("dugmeJediDiv");
@@ -46,45 +87,8 @@ export class Grad {
         method: "PUT",
       }).then((res) => {
         if (res.status == 200) {
-            document.body.innerHTML = "";
-            fetch(`https://localhost:5001/Main/GetAllGradovi`)
-              .then((result) => {
-                result.json().then((data) => {
-                  console.log(data);
-                  data.forEach((grad) => {
-                    const noviGrad = new Grad(grad.id, grad.naziv);
-                    grad.lokacije.forEach((lokacija) => {
-                      const novaLokacija = new Lokacija(
-                        lokacija.id,
-                        0,
-                        lokacija.maxKapacitet,
-                        lokacija.nazivLokacije
-                      );
-                      lokacija.hranilice.forEach((hranilica) => {
-                        const novaHranilica = new Hranilica(
-                          hranilica.id,
-                          0,
-                          hranilica.maxKapacitet
-                        );
-                        hranilica.hrana.forEach((hrana) => {
-                          const novaHrana = new Hrana(
-                            hrana.id,
-                            hrana.tip,
-                            hrana.trenutnaKolicina
-                          );
-                          novaHranilica.DodajHranu(novaHrana);
-                        });
-                        novaLokacija.DodajHranilicu(novaHranilica);
-                      });
-                      noviGrad.DodajLokaciju(novaLokacija);
-                    });
-                    noviGrad.CrtajSve(document.body);
-                  });
-                });
-              })
-              .catch((err) => {
-                console.log(console.log(err));
-              });
+          document.body.innerHTML = "";
+          this.OsveziPrikaz();
         }
       });
     };
@@ -107,44 +111,7 @@ export class Grad {
         if (res.ok) {
           //pozivamo fetch za gradove
           document.body.innerHTML = "";
-          fetch(`https://localhost:5001/Main/GetAllGradovi`)
-            .then((result) => {
-              result.json().then((data) => {
-                console.log(data);
-                data.forEach((grad) => {
-                  const noviGrad = new Grad(grad.id, grad.naziv);
-                  grad.lokacije.forEach((lokacija) => {
-                    const novaLokacija = new Lokacija(
-                      lokacija.id,
-                      0,
-                      lokacija.maxKapacitet,
-                      lokacija.nazivLokacije
-                    );
-                    lokacija.hranilice.forEach((hranilica) => {
-                      const novaHranilica = new Hranilica(
-                        hranilica.id,
-                        0,
-                        hranilica.maxKapacitet
-                      );
-                      hranilica.hrana.forEach((hrana) => {
-                        const novaHrana = new Hrana(
-                          hrana.id,
-                          hrana.tip,
-                          hrana.trenutnaKolicina
-                        );
-                        novaHranilica.DodajHranu(novaHrana);
-                      });
-                      novaLokacija.DodajHranilicu(novaHranilica);
-                    });
-                    noviGrad.DodajLokaciju(novaLokacija);
-                  });
-                  noviGrad.CrtajSve(document.body);
-                });
-              });
-            })
-            .catch((err) => {
-              console.log(console.log(err));
-            });
+          this.OsveziPrikaz();
         }
       });
     };
@@ -180,16 +147,12 @@ export class Grad {
       let naziv = div.querySelector(".nazivLokacijaNova").value;
       naziv = naziv.replace(/\s+/g, "");
       const kapacitet = parseInt(div.querySelector(".kapLokacijaNova").value);
-      console.log(kapacitet);
-      console.log(`Naziv lokacije ${naziv}, Kapacitet lokacije ${kapacitet}`);
       if (naziv && kapacitet) {
         let data = {
           maxKapacitet: kapacitet,
           trenutniKapacitet: 0,
           nazivLokacije: naziv,
         };
-        console.log(data);
-        console.log(this.id, this.naziv);
         fetch(`https://localhost:5001/Lokacija/UpisiLokaciju/${this.id}`, {
           method: "POST",
           body: JSON.stringify(data),
@@ -299,23 +262,22 @@ export class Grad {
           }
         ).then((res) => {
           console.log("Request complete! response:", res);
-          if (res.status==200) {
+          if (res.status == 200) {
             res.json().then((dataH) => {
               console.log("Uspesno!");
               const hranilica = new Hranilica(dataH.id, 0, kapacitet);
               console.log(hranilica);
-                objLokacija.DodajHranilicu(hranilica)
-                nazivLokacije.innerHTML = "";
-                nazivLokacije.innerHTML = `${objLokacija.nazivLokacije} ${objLokacija.trenutniKapacitet}/${objLokacija.maxKapacitet}`;
-                let div = document.createElement("div");
-                div.classList.add("hranilica");
-                div.innerHTML = "Prazno " + kapacitet;
-                const divZaHranilice =
-                  lokacijaDiv.querySelector(".divZaHranilice");
-                divZaHranilice.appendChild(div);
+              objLokacija.DodajHranilicu(hranilica);
+              nazivLokacije.innerHTML = "";
+              nazivLokacije.innerHTML = `${objLokacija.nazivLokacije} ${objLokacija.trenutniKapacitet}/${objLokacija.maxKapacitet}`;
+              let div = document.createElement("div");
+              div.classList.add("hranilica");
+              div.innerHTML = "Prazno " + kapacitet;
+              const divZaHranilice =
+                lokacijaDiv.querySelector(".divZaHranilice");
+              divZaHranilice.appendChild(div);
             });
-          }
-          else if(res.status == 400){
+          } else if (res.status == 400) {
             alert("Nema mesta u ovoj lokaciji");
           }
         });

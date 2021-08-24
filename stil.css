@@ -3,9 +3,10 @@
   flex-wrap: wrap;
   justify-content: space-evenly;
   margin: 10px 0px;
+  border: 1px solid black;
+  border-collapse: collapse;
 }
 .forma {
-  border: 1px solid blue;
   padding: 5px 10px;
   display: flex;
   flex-direction: column;
@@ -17,11 +18,11 @@
   flex-direction: column;
   flex-shrink: 0;
   flex-grow: 1;
-  border: 1px solid green;
 }
 .lokacija {
+  border-radius: 10px;
   border: 1px solid red;
-  margin: 5px 0px;
+  margin: 5px 5px;
   padding: 5px;
   display: flex;
   flex-basis: 200px;
